@@ -1,0 +1,22 @@
+{
+  "name": "cdk",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@types/node": "20.9.0",
+    "aws-cdk": "^2.1003.0",
+    "ts-node": "^10.9.1",
+    "typescript": "~5.2.2"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.182.0",
+    "cdk-nag": "^2.35.90",
+    "constructs": "^10.0.0",
+    "repolinter": "^0.4.0",
+    "source-map-support": "^0.5.21"
+  }
+}
