@@ -4,7 +4,7 @@ import { AttributeType, TableEncryption } from 'aws-cdk-lib/aws-dynamodb';
 import { AnyPrincipal, Effect, PolicyStatement, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { BlockPublicAccess, BucketPolicy } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
-import { S3_ACCESS_LOGGING_BUCKET_RETENTON_DAYS } from '../constants/mutable';
+import { S3_ACCESS_LOGGING_BUCKET_RETENTON_DAYS, S3_CUSTOMER_BUCKET_RETENTON_DAYS, S3_INTERNAL_BUCKET_RETENTON_DAYS } from '../constants/mutable';
 import { BucketResource } from '../constructs/bucket';
 import { DynamoDBResource } from '../constructs/dynamodb';
 
@@ -84,6 +84,9 @@ export class SharedStack extends cdk.Stack {
         blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
         enforceSSL: true,
         serverAccessLogsBucket: this.serverAccessLogsBucket,
+        lifecycleRules: {
+          expiration: cdk.Duration.days(S3_INTERNAL_BUCKET_RETENTON_DAYS),
+        },
       },
     ).bucket;
 
@@ -98,6 +101,9 @@ export class SharedStack extends cdk.Stack {
         blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
         enforceSSL: true,
         serverAccessLogsBucket: this.serverAccessLogsBucket,
+        lifecycleRules: {
+          expiration: cdk.Duration.days(S3_CUSTOMER_BUCKET_RETENTON_DAYS),
+        },
       },
     ).bucket;
 
@@ -109,6 +115,7 @@ export class SharedStack extends cdk.Stack {
         type: AttributeType.STRING,
       },
       encryption: TableEncryption.AWS_MANAGED,
+      pointInTimeRecovery: true,
     }).table;
 
     this.internalClassificationsBucketArn = internalClassificationsBucket.bucketArn;

@@ -5,6 +5,7 @@ interface DynamoDBProps {
   readonly name: string;
   readonly partitionKey: Attribute;
   readonly encryption?: TableEncryption | TableEncryption.AWS_MANAGED;
+  readonly pointInTimeRecovery?: boolean;
 }
 
 export class DynamoDBResource extends Construct {
@@ -15,7 +16,8 @@ export class DynamoDBResource extends Construct {
 
     this.table = new Table(this, props.name, {
       tableName: props.name,
-      partitionKey: props.partitionKey
+      partitionKey: props.partitionKey,
+      pointInTimeRecovery: props.pointInTimeRecovery,
     });
   }
 }
