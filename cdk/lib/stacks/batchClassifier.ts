@@ -26,6 +26,8 @@ export class BatchClassifierStack extends cdk.Stack {
     const prefix = props.prefix;
     const postfix = props.postfix;
 
+    const featureName = 'batch-classifier';
+
     const batchClassificationsQueueName = `batch-classifications-queue`;
     const batchClassificationsDlqName = `batch-classifications-dlq`;
     
@@ -69,6 +71,16 @@ export class BatchClassifierStack extends cdk.Stack {
       }),
     );
 
+    nag.NagSuppressions.addStackSuppressions(this, [
+      {
+        id: 'AwsSolutions-IAM5',
+        reason: 'Limited to specific DynamoDB and S3 actions required for batch processing functionality'
+      },
+      {
+        id: 'AwsSolutions-IAM4',
+        reason: 'Suppressing the AWS managed policy warning as we are adding explicit permissions for CloudWatch Logs',
+      }
+    ]);
     const bedrockRoleName = 'bedrock-role';
     const bedrockRole = new IamRoleResource(
       this,
@@ -106,7 +118,8 @@ export class BatchClassifierStack extends cdk.Stack {
       ),
     });
 
-    const batchProcessingLambdaRoleName = 'batch-classifier-role';
+    const batchProcessingFunctionName = `${featureName}-function`;
+    const batchProcessingLambdaRoleName = `${featureName}-role`;
     const batchProcessingLambdaRole = new IamRoleResource(
       this,
       batchProcessingLambdaRoleName,
@@ -159,7 +172,29 @@ export class BatchClassifierStack extends cdk.Stack {
                 'dynamodb:Scan'
               ],
               sid: 'DynamoDBAccess',
-            })
+            }),
+            new PolicyStatement({
+              effect: Effect.ALLOW,
+              resources: [
+                `arn:aws:logs:${props.env.region}:${props.env.account}:log-group:/aws/lambda/${prefix}-${batchProcessingFunctionName}-lg-${postfix}:*`
+              ],
+              actions: [
+                'logs:CreateLogStream',
+                'logs:PutLogEvents'
+              ],
+              sid: 'CloudWatchLogsAccess',
+            }),
+            // Add permission to create the log group as well
+            new PolicyStatement({
+              effect: Effect.ALLOW,
+              resources: [
+                `arn:aws:logs:${props.env.region}:${props.env.account}:log-group:/aws/lambda/${prefix}-${batchProcessingFunctionName}-lg-${postfix}`
+              ],
+              actions: [
+                'logs:CreateLogGroup'
+              ],
+              sid: 'CloudWatchLogsGroupAccess',
+            }),
           ],
         }
       ),
@@ -187,7 +222,6 @@ export class BatchClassifierStack extends cdk.Stack {
         reason: 'Python 11 Version contain numpy library which is required here',
       },
     ]);
-    const batchProcessingFunctionName = `batch-classifier-function`;
     const batchProcessingFunction = new LambdaResource(this,
       batchProcessingFunctionName,
       {

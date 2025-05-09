@@ -26,7 +26,9 @@ export class BatchResultsProcessingStack extends cdk.Stack {
 
     const prefix = props.prefix;
     const postfix = props.postfix;
-    
+
+    const featureName = 'batch-results-processing';
+
     const batchResultsProcessingQueueName = 'batch-results-queue';
     const batchResultsProcessingDlqName = 'batch-results-dlq';
     const batchResultsProcessingQueue = new SqsResource(
@@ -79,7 +81,8 @@ export class BatchResultsProcessingStack extends cdk.Stack {
         reason: 'Suppressing the AWS managed policy warning as we are adding explicit permissions for CloudWatch Logs',
       }
     ]);
-    const batchResultsProcessingLambdaRoleName = 'batch-results-processing-role';
+    const batchResultsProcessingFunctionName = `${featureName}-function`;
+    const batchResultsProcessingLambdaRoleName = `${featureName}-role`;
     const batchResultsProcessingLambdaRole = new IamRoleResource(
       this,
       batchResultsProcessingLambdaRoleName,
@@ -121,7 +124,7 @@ export class BatchResultsProcessingStack extends cdk.Stack {
             new PolicyStatement({
               effect: Effect.ALLOW,
               resources: [
-                `arn:aws:logs:${props.env.region}:${props.env.account}:log-group:/aws/lambda/${prefix}-batch-results-processing-function-lg-${postfix}:*`
+                `arn:aws:logs:${props.env.region}:${props.env.account}:log-group:/aws/lambda/${prefix}-${batchResultsProcessingFunctionName}-lg-${postfix}:*`
               ],
               actions: [
                 'logs:CreateLogStream',
@@ -133,7 +136,7 @@ export class BatchResultsProcessingStack extends cdk.Stack {
             new PolicyStatement({
               effect: Effect.ALLOW,
               resources: [
-                `arn:aws:logs:${props.env.region}:${props.env.account}:*`
+                `arn:aws:logs:${props.env.region}:${props.env.account}:log-group:/aws/lambda/${prefix}-${batchResultsProcessingFunctionName}-lg-${postfix}`
               ],
               actions: [
                 'logs:CreateLogGroup'
@@ -155,7 +158,6 @@ export class BatchResultsProcessingStack extends cdk.Stack {
         reason: 'Python 11 Version contain numpy library which is required here',
       },
     ]);
-    const batchResultsProcessingFunctionName = 'batch-results-processing-function';
     const batchResultsProcessingFunction = new LambdaResource(this,
       batchResultsProcessingFunctionName,
       {

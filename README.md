@@ -42,7 +42,7 @@ To perform the solution, you need the following prerequisites:
 
 Follow these steps to set up and deploy the solution:
 
-* **Clone the Repository**: Run the command  `git clone https://github.com/nikoshka-art/genai-bedrock-batch-classifier`
+* **Clone the Repository**: Run the command  `git clone git@github.com:aws-samples/sample-genai-bedrock-batch-classifier.git`
 * **Set Up AWS Credentials**: Create IAM user with appropriate permissions or you can choose Admin for the simplicity, generate credentials for Amazon Command Line Interface (CLI) access and create a profile by following steps in [this article](https://docs.aws.amazon.com/cli/v1/userguide/cli-authentication-user.html). 
 * **Bootstrap the Application**: Navigate to the CDK folder and run the command `npm run i && cdk bootstrap --profile {your_profile_name}`, replacing {your_profile_name} with your actual AWS profile name. 
 * **Review Configuration (Optional)**: Although this step is optional, we recommend reviewing the configuration options available in this section before proceeding with the deployment, as it will help you understand what customizations are possible.

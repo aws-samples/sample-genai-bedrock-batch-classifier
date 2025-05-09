@@ -27,6 +27,8 @@ export class DataPreparationStack extends cdk.Stack {
     const prefix = props.prefix;
     const postfix = props.postfix;
 
+    const featureName = 'data-preparation';
+
     const customerRequestsQueueName = 'customer-requests-queue';
     const customerRequestsDlqName = 'customer-requests-dlq';
     const customerRequestsQueue = new SqsResource(
@@ -80,7 +82,8 @@ export class DataPreparationStack extends cdk.Stack {
       }
     ]);
     
-    const dataPreparationLambdaRoleName = 'data-preparation-role';
+    const dataPreparationFunctionName = `${featureName}-function`;
+    const dataPreparationLambdaRoleName = `${featureName}-role`;
     const dataPreparationLambdaRole = new IamRoleResource(
       this,
       dataPreparationLambdaRoleName,
@@ -122,7 +125,7 @@ export class DataPreparationStack extends cdk.Stack {
             new PolicyStatement({
               effect: Effect.ALLOW,
               resources: [
-                `arn:aws:logs:${props.env.region}:${props.env.account}:log-group:/aws/lambda/${prefix}-data-preparation-function-lg-${postfix}:*`
+                `arn:aws:logs:${props.env.region}:${props.env.account}:log-group:/aws/lambda/${prefix}-${dataPreparationFunctionName}-lg-${postfix}:*`
               ],
               actions: [
                 'logs:CreateLogStream',
@@ -134,7 +137,7 @@ export class DataPreparationStack extends cdk.Stack {
             new PolicyStatement({
               effect: Effect.ALLOW,
               resources: [
-                `arn:aws:logs:${props.env.region}:${props.env.account}:log-group:/aws/lambda/${prefix}-data-preparation-function-lg-${postfix}`
+                `arn:aws:logs:${props.env.region}:${props.env.account}:log-group:/aws/lambda/${prefix}-${dataPreparationFunctionName}-lg-${postfix}`
               ],
               actions: [
                 'logs:CreateLogGroup'
@@ -156,7 +159,6 @@ export class DataPreparationStack extends cdk.Stack {
         reason: 'Python 11 Version contain numpy library which is required here',
       },
     ]);
-    const dataPreparationFunctionName = 'data-preparation-function';
     const dataPreparationFunction = new LambdaResource(this,
       dataPreparationFunctionName,
       {
