@@ -89,6 +89,28 @@ export class AnalyticsStack extends cdk.Stack {
             }),
             new PolicyStatement({
               effect: Effect.ALLOW,
+              sid: 'LogAccess',
+              actions: [
+                'logs:CreateLogGroup',
+                'logs:CreateLogStream',
+                'logs:PutLogEvents',
+              ],
+              resources: [
+                `arn:aws:logs:${this.region}:${this.account}:log-group:/aws-glue/crawlers:log-stream:${this.prefix}-glue-crawler-${this.region}`,
+              ],
+            }),
+            new PolicyStatement({
+              effect: Effect.ALLOW,
+              sid: 'KMSAccess',
+              actions: [
+                'kms:Decrypt',
+              ],
+              resources: [
+                `arn:aws:kms:${this.region}:${this.account}:key/*`,
+              ],
+            }),
+            new PolicyStatement({
+              effect: Effect.ALLOW,
               resources: [
                 `arn:aws:glue:${this.region}:${this.account}:catalog`,
                 `arn:aws:glue:${this.region}:${this.account}:database/${this.athenaDatabaseName}`,
