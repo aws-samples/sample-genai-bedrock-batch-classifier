@@ -3,7 +3,7 @@ import { OUTPUT_FORMATS, QUICKSIGHT_QUERY_MODES } from './types';
 
 // The constants below can be configured as needed
 export const PREFIX = 'genai';
-export const BEDROCK_AGENT_MODEL = 'anthropic.claude-3-5-haiku-20241022-v1:0';
+export const BEDROCK_AGENT_MODEL = 'anthropic.claude-3-haiku-20240307-v1:0';
 export const BATCH_SIZE = 200; // minimum should be 100
 
 export const CLASSIFICATIONS_INPUT_FOLDER = 'input_data';

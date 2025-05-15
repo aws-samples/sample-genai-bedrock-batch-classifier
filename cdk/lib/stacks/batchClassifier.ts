@@ -6,7 +6,7 @@ import { Bucket, EventType } from 'aws-cdk-lib/aws-s3';
 import { SqsDestination } from 'aws-cdk-lib/aws-s3-notifications';
 import * as nag from 'cdk-nag';
 import { Construct } from 'constructs';
-import { BEDROCK_AGENT_MODEL, CLASSIFICATIONS_INPUT_FOLDER, CLASSIFICATIONS_OUTPUT_FOLDER, MAX_CONCURRENCY, PANDA_ACCOUNT } from '../constants';
+import { BEDROCK_AGENT_MODEL, CLASSIFICATIONS_INPUT_FOLDER, CLASSIFICATIONS_OUTPUT_FOLDER, MAX_CONCURRENCY, PANDA_ACCOUNT, PREFIX } from '../constants';
 import { IamRoleResource } from '../constructs/iam';
 import { LambdaResource } from '../constructs/lambda';
 import { SqsResource } from '../constructs/sqs';
@@ -233,7 +233,7 @@ export class BatchClassifierStack extends cdk.Stack {
         environmentVariables: {
           BEDROCK_ROLE: bedrockRole.iamRole.roleArn,
           BEDROCK_MODEL_ID: BEDROCK_AGENT_MODEL,
-          BEDROCK_JOB_PREFIX: `${prefix}-job`,
+          BEDROCK_JOB_PREFIX: `${PREFIX}-job`,
           OUTPUT_FOLDER_NAME: CLASSIFICATIONS_OUTPUT_FOLDER,
           JOB_STATUS_TABLE: props.jobProcessingStatusTable,
         },
