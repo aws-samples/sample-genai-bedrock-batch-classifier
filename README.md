@@ -82,7 +82,7 @@ Upon successful completion of the deployment process, you'll see a total of 6 st
 * `QUICKSIGHT_QUERY_MODE`: Allows you to choose between SPICE or direct query for fetching data, depending on your use case, data volume, and data freshness requirements. The default setting is direct query.
 
 
-Now that you've successfully deployed the system, it's time to put it to work. Start by preparing your data file - this can be either real customer data or a synthetic dataset we've provided for testing (you can find the sample file under sample_files folder). Once you have your file ready, navigate to the S3 bucket named "{prefix}-customer-requests-bucket-{region}" and upload your file to input_data folder. The system will automatically begin processing your data without requiring any manual intervention - just sit back and let the system do its job. After a short while, you can view the classification results on the dashboard. You can find it under the name "{prefix}-classifications-dashboard-{region}". 
+Now that you've successfully deployed the system, it's time to put it to work. Start by preparing your data file - this can be either real customer data or a synthetic dataset we've provided for testing (you can find the sample file here). Once you have your file ready, navigate to the S3 bucket named "{prefix}-{account_id}-customer-requests-bucket-{region}" and upload your file to input_data folder. The system will automatically begin processing your data without requiring any manual intervention - just sit back and let the system do its job. After the completion of batch inference job, you can view the classification results on the dashboard. You can find it under the name "{prefix}-{account_id}-classifications-dashboard-{region}". Take a look at the following screenshot to get a preview of what you can expect:
 
 ## Known Limitations
 
@@ -93,12 +93,11 @@ These limitations define the operational boundaries of the classification soluti
 * **Input File Formats**: The solution currently supports only CSV, JSON, and XLSX file formats for input data.
 
 ## Clean up
-
 To avoid additional charges, remember to clean up your AWS resources when they're no longer needed by running the command `cdk destroy --all --profile {your_profile_name}`, replacing {your_profile_name} with your AWS profile name.
 
-To remove all resources associated with this project, start by accessing the AWS Console and heading to the S3 service. Once there, you'll need to locate two specific buckets by searching for your "{prefix}". These buckets will be named "{prefix}-customer-requests-bucket-{region}" and "{prefix}-internal-classifications-bucket-{region}". Both of these buckets should be deleted to ensure proper cleanup.
+To remove all resources associated with this project, start by accessing the AWS Console and heading to the S3 service. Once there, you'll need to locate two specific buckets by searching for your "{prefix}". These buckets will be named "{prefix}-{account_id}-customer-requests-bucket-{region}" and "{prefix}-{account_id}-internal-classifications-bucket-{region}". Both of these buckets should be deleted to ensure proper cleanup.
 
-After handling the S3 buckets, the next step is to clean up the DynamoDB resources. Navigate to the Amazon DynamoDB console and look for a table named "{prefix}-batch-processing-status-{region}". Once you've found this table, proceed with its deletion to complete the cleanup process.
+After handling the S3 buckets, the next step is to clean up the DynamoDB resources. Navigate to the Amazon DynamoDB console and look for a table named "{prefix}-{account_id}-batch-processing-status-{region}". Once you've found this table, proceed with its deletion to complete the cleanup process.
 
 This comprehensive cleanup ensures that no residual resources remain in your AWS account from this project.
 
