@@ -10,16 +10,17 @@ import { DataPreparationStack } from './stacks/dataPreparation';
 import { SharedStack } from './stacks/shared';
 
 
-const POSTFIX = process.env.CDK_DEFAULT_REGION as string; // can be ACCOUNT_ID and REGION and STAGE to ensure unique naming across environments
+const REGION = process.env.CDK_DEFAULT_REGION as string; // can be ACCOUNT_ID and REGION and STAGE to ensure unique naming across environments
+const ACCOUNT_ID = process.env.CDK_DEFAULT_ACCOUNT as string;
 
 const app = new cdk.App();
-const environmentVariables = { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION }
+const environmentVariables = { account: ACCOUNT_ID, region: REGION }
 
 // Create the shared resources first
 const sharedStack = new SharedStack(app, 'SharedStack', {
   env: environmentVariables,
-  prefix: PREFIX,
-  postfix: POSTFIX,
+  prefix:  `${PREFIX}-${ACCOUNT_ID}`,
+  postfix: REGION,
 });
 
 // Create the batch classifier stack
@@ -28,8 +29,8 @@ const batchClassifierStack = new BatchClassifierStack(
   'BatchClassifierStack',
   {
     env: environmentVariables,
-    prefix: PREFIX,
-    postfix: POSTFIX,
+    prefix: `${PREFIX}-${ACCOUNT_ID}`,
+    postfix: REGION,
     internalClassificationsBucketArn: sharedStack.internalClassificationsBucketArn,
     jobProcessingStatusTable: sharedStack.jobProcessingStatusTable,
   }
@@ -41,8 +42,8 @@ const dataPreparationStack = new DataPreparationStack(
   'DataPreparationStack',
   {
     env: environmentVariables,
-    prefix: PREFIX,
-    postfix: POSTFIX,
+    prefix: `${PREFIX}-${ACCOUNT_ID}`,
+    postfix: REGION,
     internalClassificationsBucketArn: sharedStack.internalClassificationsBucketArn,
     customerRequestsBucketArn: sharedStack.customerRequestsBucketArn,
     jobProcessingStatusTable: sharedStack.jobProcessingStatusTable,
@@ -55,8 +56,8 @@ const batchResultsProcessingStack = new BatchResultsProcessingStack(
   'BatchResultsProcessingStack',
   {
     env: environmentVariables,
-    prefix: PREFIX,
-    postfix: POSTFIX,
+    prefix: `${PREFIX}-${ACCOUNT_ID}`,
+    postfix: REGION,
     internalClassificationsBucketArn: sharedStack.internalClassificationsBucketArn,
     customerRequestsBucketArn: sharedStack.customerRequestsBucketArn,
     jobProcessingStatusTable: sharedStack.jobProcessingStatusTable,
@@ -69,8 +70,8 @@ const analyticsStack = new AnalyticsStack(
   'AnalyticsStack',
   {
     env: environmentVariables,
-    prefix: PREFIX,
-    postfix: POSTFIX,
+    prefix: `${PREFIX}-${ACCOUNT_ID}`,
+    postfix: REGION,
     athenaDatabaseName: ATHENA_DATABASE_NAME,
     internalClassificationsBucketArn: sharedStack.internalClassificationsBucketArn,
     internalClassificationsBucketName: sharedStack.internalClassificationsBucketName,

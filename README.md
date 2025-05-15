@@ -33,9 +33,10 @@ To perform the solution, you need the following prerequisites:
 
 * An active [AWS account](https://signin.aws.amazon.com/signin?redirect_uri=https%3A%2F%2Fportal.aws.amazon.com%2Fbilling%2Fsignup%2Fresume&client_id=signup).
 * An AWS Region from the list of batch inference [supported Regions](https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-supported.html) for Amazon Bedrock.
-* Access to your selected models hosted on Amazon Bedrock. Make sure the [selected model has been enabled](https://docs.aws.amazon.com/bedrock/latest/userguide/getting-started.html) in Amazon Bedrock.
-* Sign Up for [Amazon Quicksight](https://docs.aws.amazon.com/quicksight/latest/user/signing-up.html) in the same [region](https://docs.aws.amazon.com/quicksight/latest/user/regions-qs.html) as the main application will be deployed.
-* Create a dedicated [group](https://docs.aws.amazon.com/quicksight/latest/user/creating-groups-console.html) within Amazon Quicksight, that will be used for access management to the BI Dashboard, and ensure you add your own role to this group to guarantee your ability to view the dashboard after deployment.
+* Access to your selected models hosted on Amazon Bedrock. Make sure the [selected model has been enabled](https://docs.aws.amazon.com/bedrock/latest/userguide/getting-started.html) in Amazon Bedrock. The solution is configured to use Claude 3 Haiku by default.
+* Sign Up for [Amazon Quicksight](https://docs.aws.amazon.com/quicksight/latest/user/signing-up.html) in the same [region](https://docs.aws.amazon.com/quicksight/latest/user/regions-qs.html) as the main application will be deployed. Note, this subscription process configure access to Athena and S3 Bucket Services.
+* In Amazon QuickSight, create a [group](https://docs.aws.amazon.com/quicksight/latest/user/creating-groups-console.html) named 'quicksight-access'  for managing dashboard access permissions. Make sure to add your own role to this group so you can access the dashboard after it's deployed. Note: If you use a different group name, you'll need to modify the corresponding name in the codeaccordingly.
+* To set up the AWS CDK, install the CDK Command Line Interface (CLI) using the instructions available in the [AWS documentation](https://docs.aws.amazon.com/cdk/v2/guide/cli.html). Follow the steps outlined in this guide to complete the installation process.
 
 
 ## Deployment
@@ -44,7 +45,7 @@ Follow these steps to set up and deploy the solution:
 
 * **Clone the Repository**: Run the command  `git clone git@github.com:aws-samples/sample-genai-bedrock-batch-classifier.git`
 * **Set Up AWS Credentials**: Create IAM user with appropriate permissions or you can choose Admin for the simplicity, generate credentials for Amazon Command Line Interface (CLI) access and create a profile by following steps in [this article](https://docs.aws.amazon.com/cli/v1/userguide/cli-authentication-user.html). 
-* **Bootstrap the Application**: Navigate to the CDK folder and run the command `npm run i && cdk bootstrap --profile {your_profile_name}`, replacing {your_profile_name} with your actual AWS profile name. 
+* **Bootstrap the Application**: Navigate to the CDK folder and run the command `npm install && cdk bootstrap --profile {your_profile_name}`, replacing {your_profile_name} with your actual AWS profile name. 
 * **Review Configuration (Optional)**: Although this step is optional, we recommend reviewing the configuration options available in this section before proceeding with the deployment, as it will help you understand what customizations are possible.
 * **Deploy the Solution**: Run the command `cdk deploy --all --profile {your_profile_name}`, replacing {your_profile_name} with your AWS profile name.
 
@@ -81,14 +82,14 @@ Upon successful completion of the deployment process, you'll see a total of 6 st
 * `QUICKSIGHT_QUERY_MODE`: Allows you to choose between SPICE or direct query for fetching data, depending on your use case, data volume, and data freshness requirements. The default setting is direct query.
 
 
-Now that you've successfully deployed the system, it's time to put it to work. Start by preparing your data file - this can be either real customer data or a synthetic dataset we've provided for testing (you can find the sample file under sample_files folder). Once you have your file ready, navigate to the S3 bucket named "{prefix}-customer-requests-bucket-{region}" and upload your file to it. The system will automatically begin processing your data without requiring any manual intervention - just sit back and let the system do its job. After a short while, you can view the classification results on the dashboard. You can find it under the name "{prefix}-classifications-dashboard-{region}". 
+Now that you've successfully deployed the system, it's time to put it to work. Start by preparing your data file - this can be either real customer data or a synthetic dataset we've provided for testing (you can find the sample file under sample_files folder). Once you have your file ready, navigate to the S3 bucket named "{prefix}-customer-requests-bucket-{region}" and upload your file to input_data folder. The system will automatically begin processing your data without requiring any manual intervention - just sit back and let the system do its job. After a short while, you can view the classification results on the dashboard. You can find it under the name "{prefix}-classifications-dashboard-{region}". 
 
 ## Known Limitations
 
 These limitations define the operational boundaries of the classification solution and should be considered when planning its use:
 
 * **Minimum Batch Size**: Bedrock Batch Inference requires at least 100 classifications per batch.
-* **Processing Time**: Classification might take up to 24 hours to complete.
+* **Processing Time**: While Amazon Bedrock strives to provide completion times within 24 hours, this timeframe is a best-effort estimate and cannot be guaranteed.
 * **Input File Formats**: The solution currently supports only CSV, JSON, and XLSX file formats for input data.
 
 ## Clean up
