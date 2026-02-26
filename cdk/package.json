@@ -13,7 +13,7 @@
     "typescript": "~5.2.2"
   },
   "dependencies": {
-    "aws-cdk-lib": "^2.182.0",
+    "aws-cdk-lib": "^2.240.0",
     "cdk-nag": "^2.35.90",
     "constructs": "^10.0.0",
     "repolinter": "^0.4.0",
